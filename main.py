@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.staticfiles import StaticFiles
 
 app = FastAPI(
     title="rent-a-room",
@@ -6,6 +7,8 @@ app = FastAPI(
     version="1.0.0",
     contact={"name": "himu", "email": "xyz@gmail.com"},
 )
+
+app.mount("/assets", StaticFiles(directory="assets"), name="assets")
 
 rooms = [
     {
