@@ -17,6 +17,7 @@ rooms = [
         "price_per_night": 250.00,
         "bedrooms": 3,
         "bathrooms": 2,
+        "price": 20000,
     },
     {
         "id": 2,
@@ -24,6 +25,7 @@ rooms = [
         "price_per_night": 135.50,
         "bedrooms": 1,
         "bathrooms": 1,
+        "price": 10000,
     },
     {
         "id": 3,
@@ -31,6 +33,7 @@ rooms = [
         "price_per_night": 180.00,
         "bedrooms": 2,
         "bathrooms": 1,
+        "price": 15000,
     },
     {
         "id": 4,
@@ -38,6 +41,7 @@ rooms = [
         "price_per_night": 420.00,
         "bedrooms": 5,
         "bathrooms": 4,
+        "price": 5000,
     },
     {
         "id": 5,
@@ -45,6 +49,7 @@ rooms = [
         "price_per_night": 95.00,
         "bedrooms": 1,
         "bathrooms": 1,
+        "price": 1000,
     },
 ]
 
@@ -55,10 +60,10 @@ def get_home_page():
 
 
 @app.get("/rooms", status_code=200)
-def get_rooms(search: str = ""):
+def get_rooms(search: str = "", max_price: int = 10_000):
     collection = []
     for room in rooms:
-        if search.lower() in room["name"].lower():
+        if search.lower() in room["name"].lower() and room["price"] <= max_price:
             collection.append(room)
     return collection
 
