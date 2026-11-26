@@ -55,8 +55,12 @@ def get_home_page():
 
 
 @app.get("/rooms", status_code=200)
-def get_rooms():
-    return rooms
+def get_rooms(search: str = ""):
+    collection = []
+    for room in rooms:
+        if search.lower() in room["name"].lower():
+            collection.append(room)
+    return collection
 
 
 @app.get("/rooms/{room_id}", status_code=200)
