@@ -2,6 +2,8 @@ from typing import Annotated
 
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.staticfiles import StaticFiles
+from pydantic import AfterValidator
+from pydantic_core import PydanticCustomError
 
 app = FastAPI(
     title="rent-a-room",
@@ -61,10 +63,20 @@ def get_home_page():
     return {"message": "This is Home Page!!"}
 
 
+def fail_if_funny(search):
+    if search and "lol" in search:
+        raise PydanticCustomError(
+            "validation_error", "No funny things, Only serious businesses"
+        )
+    return search
+
+
 @app.get("/rooms", status_code=200)
 def get_rooms(
-    search: Annotated[str | None, Query(min_length=3, max_length=10)] = None,
-    max_price: int | None = None,
+    search: Annotated[
+        str | None, Query(min_length=3, max_length=10), AfterValidator(fail_if_funny)
+    ] = None,
+    max_price: Annotated[int | None, Query(ge=10, le=10000)] = None,
 ):
     results = rooms.copy()
 
