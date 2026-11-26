@@ -1,6 +1,8 @@
-def main():
-    print("Hello from rent-a-room!")
+from fastapi import FastAPI
+
+app = FastAPI()
 
 
-if __name__ == "__main__":
-    main()
+@app.get("/")
+def get_home_page():
+    return {"message": "This is Home Page!!"}
