@@ -54,3 +54,10 @@ def get_home_page():
 @app.get("/rooms", status_code=200)
 def get_rooms():
     return rooms
+
+
+@app.get("/rooms/{room_id}", status_code=200)
+def get_room(room_id: int):
+    for room in rooms:
+        if room["id"] == room_id:
+            return room
