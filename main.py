@@ -12,6 +12,21 @@ app = FastAPI(
     contact={"name": "himu", "email": "xyz@gmail.com"},
 )
 
+
+def fail_if_funny(search):
+    if search and "lol" in search:
+        raise PydanticCustomError(
+            "validation_error", "No funny things, Only serious businesses"
+        )
+    return search
+
+
+SearchQuery = Annotated[
+    str | None, Query(min_length=3, max_length=10), AfterValidator(fail_if_funny)
+]
+
+PriceQuery = Annotated[int | None, Query(ge=10, le=10000)]
+
 app.mount("/assets", StaticFiles(directory="assets"), name="assets")
 
 rooms = [
@@ -63,20 +78,10 @@ def get_home_page():
     return {"message": "This is Home Page!!"}
 
 
-def fail_if_funny(search):
-    if search and "lol" in search:
-        raise PydanticCustomError(
-            "validation_error", "No funny things, Only serious businesses"
-        )
-    return search
-
-
 @app.get("/rooms", status_code=200)
 def get_rooms(
-    search: Annotated[
-        str | None, Query(min_length=3, max_length=10), AfterValidator(fail_if_funny)
-    ] = None,
-    max_price: Annotated[int | None, Query(ge=10, le=10000)] = None,
+    search: SearchQuery = None,
+    max_price: PriceQuery = None,
 ):
     results = rooms.copy()
 
